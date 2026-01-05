@@ -7,7 +7,10 @@ Omni-LIVO is a multi-camera extension of FAST-LIVO2 with enhanced robustness for
 
 🚧 **Work in Progress** - More documentation and examples will be added as the project develops.
 
-📝 **Paper Under Review** - Our paper is currently under review. The complete source code will be released upon acceptance.
+📝 **Paper Under Review** - Our paper is currently under review. The complete source code will be released upon acceptance. 
+Cite as:	arXiv:2509.15673 [cs.RO]
+https://doi.org/10.48550/arXiv.2509.15673
+
 
 *Detailed documentation and paper will be available upon publication.*
 ## Acknowledgments
