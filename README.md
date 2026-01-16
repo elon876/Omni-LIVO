@@ -3,7 +3,7 @@
 **Omni-LIVO: Robust RGB-Colored Multi-Camera Visual-Inertial-LiDAR Odometry via Photometric Migration and ESIKF Fusion**
 
 [![Paper](https://img.shields.io/badge/Paper-arXiv-b31b1b)](https://arxiv.org/abs/2509.15673)
-[![Dataset](https://img.shields.io/badge/Dataset-Download-green)](https://pan.baidu.com/s/1An5d8USZtM1zgQY57lUn7w?pwd=74ih)
+[![Dataset](https://img.shields.io/badge/Dataset-Download-green)](https://pan.baidu.com/s/11SaVzvJGM1juWH-zAbGySg?pwd=328S)
 
 This repository contains the official implementation of **Omni-LIVO**, a tightly-coupled multi-camera LiDAR-Inertial-Visual Odometry system that extends FAST-LIVO2 with multi-view photometric constraints for enhanced robustness and accuracy.
 
@@ -49,7 +49,7 @@ If you use this code in your research, please cite our paper:
 
 ## Omni-LIVO Dataset
 
-**Download Link**: [Baidu Netdisk](https://pan.baidu.com/s/1An5d8USZtM1zgQY57lUn7w?pwd=74ih) (Password: 74ih)
+**Download Link**: [Baidu Netdisk](https://pan.baidu.com/s/11SaVzvJGM1juWH-zAbGySg?pwd=328S)
 
 ### Sensor Configuration
 
