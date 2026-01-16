@@ -36,12 +36,14 @@ extrin_calib:
              -0.032811,  -0.001084,  -0.999461,
              -0.719232,  -0.694343,   0.024365]
       Pcl: [ -0.005720,  -0.078270,  -0.030108]
-    - cam_id: 3
-      img_topic: "/cam_rare"
-      Rcl: [  0.726027,   0.687592,  -0.010122,
-              0.001577,  -0.016384,  -0.999865,
-              -0.687665,   0.725912,  -0.012979]
-      Pcl: [  0.079652,   0.014322,  -0.068272]
+
+      # robot seqences
+    # - cam_id: 3
+    #   img_topic: "/cam_rear"
+    #   Rcl: [  0.726027,   0.687592,  -0.010122,
+    #           0.001577,  -0.016384,  -0.999865,
+    #           -0.687665,   0.725912,  -0.012979]
+    #   Pcl: [  0.079652,   0.014322,  -0.068272]
 time_offset:
   imu_time_offset: 0.0
   img_time_offset: 0.0
@@ -49,7 +51,7 @@ time_offset:
 
 preprocess:
   point_filter_num: 1
-  filter_size_surf: 0.1
+  filter_size_surf: 0.1 # 0.2
   lidar_type: 1
   scan_line: 4
   blind: 0.5
@@ -63,7 +65,7 @@ pcd_save:
 vio:
   max_iterations: 5
   outlier_threshold: 100
-  img_point_cov: 1000
+  img_point_cov: 100
   patch_size: 4
   patch_pyrimid_level: 4
   normal_en: true
@@ -74,7 +76,7 @@ vio:
   dynamic_cov_error_max: 100
   enable_cross_camera_tracking: true   # Enable cross-camera tracking (multi-camera system)
   enable_dynamic_covariance: false
-  max_cov_scale: 1500.0
+  max_cov_scale: 2000.0
   min_cov_scale: 500.0
   max_total_points: 150               # Maximum total points across all cameras
 
