@@ -2,7 +2,7 @@
 
 **Omni-LIVO: Robust RGB-Colored Multi-Camera Visual-Inertial-LiDAR Odometry via Photometric Migration and ESIKF Fusion**
 
-[![Paper](https://img.shields.io/badge/Paper-IEEE%20RAL%202026-blue)](https://github.com/elon876/Omni-LIVO)
+[![Paper](https://img.shields.io/badge/Paper-arXiv-b31b1b)](https://arxiv.org/abs/2509.15673)
 [![Dataset](https://img.shields.io/badge/Dataset-Download-green)](https://pan.baidu.com/s/1An5d8USZtM1zgQY57lUn7w?pwd=74ih)
 
 This repository contains the official implementation of **Omni-LIVO**, a tightly-coupled multi-camera LiDAR-Inertial-Visual Odometry system that extends FAST-LIVO2 with multi-view photometric constraints for enhanced robustness and accuracy.
@@ -28,12 +28,14 @@ Wide field-of-view (FoV) LiDAR sensors provide dense geometry across large envir
 If you use this code in your research, please cite our paper:
 
 ```bibtex
-@article{cao2026omnilivo,
+@misc{cao2025omnilivo,
   title={Omni-LIVO: Robust RGB-Colored Multi-Camera Visual-Inertial-LiDAR Odometry via Photometric Migration and ESIKF Fusion},
   author={Cao, Yinong and Zhang, Chenyang and He, Xin and Chen, Yuwei and Pu, Chengyu and Wang, Bingtao and Wu, Kaile and Zhu, Shouzheng and Han, Fei and Liu, Shijie and Li, Chunlai and Wang, Jianyu},
-  journal={IEEE Robotics and Automation Letters},
-  year={2026},
-  publisher={IEEE}
+  year={2025},
+  eprint={2509.15673},
+  archivePrefix={arXiv},
+  primaryClass={cs.RO},
+  note={Accepted by IEEE Robotics and Automation Letters (RA-L)}
 }
 ```
 
