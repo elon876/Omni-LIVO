@@ -71,8 +71,9 @@ vio:
   inverse_composition_en: false
   exposure_estimate_en: true
   inv_expo_cov: 0.1
+  dynamic_cov_error_max: 100
   enable_cross_camera_tracking: true   # Enable cross-camera tracking (multi-camera system)
-  enable_dynamic_covariance: true
+  enable_dynamic_covariance: false
   max_cov_scale: 1500.0
   min_cov_scale: 500.0
   max_total_points: 150               # Maximum total points across all cameras

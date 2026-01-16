@@ -65,8 +65,9 @@ vio:
   inv_expo_cov: 0.1
   enable_cross_camera_tracking: true   # Enable cross-camera tracking (multi-camera system)
   enable_dynamic_covariance: true
-  max_cov_scale: 1500.0  #cupa 1000-2000
-  min_cov_scale: 800.0
+  dynamic_cov_error_max: 50
+  max_cov_scale: 1500.0  
+  min_cov_scale: 500.0
   max_total_points: 300               # Maximum total points across all cameras
 
 imu:
