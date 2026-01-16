@@ -39,11 +39,11 @@ If you use this code in your research, please cite our paper:
 
 ## Features
 
-✨ **Multi-Camera Support**: Seamless integration of multiple cameras with non-overlapping FoVs
-🔄 **Cross-View Migration**: Photometric patch tracking across different camera views
-📊 **Adaptive Covariance**: Dynamic weighting based on real-time photometric error
-🗺️ **Unified Voxel Map**: Integrated LiDAR geometry and multi-view visual observations
-🎨 **Dense RGB Colorization**: 3.5× more colored points than FAST-LIVO2 in complex environments
+- ✨ **Multi-Camera Support**: Seamless integration of multiple cameras with non-overlapping FoVs
+- 🔄 **Cross-View Migration**: Photometric patch tracking across different camera views
+- 📊 **Adaptive Covariance**: Dynamic weighting based on real-time photometric error
+- 🗺️ **Unified Voxel Map**: Integrated LiDAR geometry and multi-view visual observations
+- 🎨 **Dense RGB Colorization**: 3.5× more colored points than FAST-LIVO2 in complex environments
 
 ## Omni-LIVO Dataset
 
