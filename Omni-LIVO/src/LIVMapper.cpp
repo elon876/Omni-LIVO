@@ -1168,8 +1168,8 @@ void LIVMapper::publish_img_rgb(const image_transport::Publisher &pubImage, VIOM
 //    out_msg.header.frame_id = "camera_init";
     out_msg.encoding = sensor_msgs::image_encodings::BGR8;
     out_msg.image = img_rgb;
-    ROS_INFO("img_rgb: size = (%d, %d), type = %d, isContinuous = %d",
-             out_msg.image.cols, out_msg.image.rows, out_msg.image.type(), out_msg.image.isContinuous());
+    // ROS_INFO("img_rgb: size = (%d, %d), type = %d, isContinuous = %d",
+    //          out_msg.image.cols, out_msg.image.rows, out_msg.image.type(), out_msg.image.isContinuous());
     pubImage.publish(out_msg.toImageMsg());
 }
 

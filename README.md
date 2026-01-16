@@ -203,19 +203,6 @@ The `cvt10hz.py` script:
 - Preserves LiDAR and IMU data unchanged
 - Supports batch processing of multiple bag files
 
-### On Newer College Dataset
-
-```bash
-roslaunch fast_livo mapping_newer_college.launch
-rosbag play newer_college.bag
-```
-
-## Supported Datasets
-
-✅ **Hilti SLAM Challenge 2022** (15 sequences) - *Requires camera frame rate conversion to 10Hz*
-✅ **Hilti SLAM Challenge 2023** (5 sequences) - *Requires camera frame rate conversion to 10Hz*
-✅ **Newer College Dataset** (7 sequences)
-✅ **Custom Multi-Camera Dataset** with LIVOX MID360 + 3/4 cameras
 
 **Note**: Hilti datasets require preprocessing with `cvt10hz.py` script to convert cameras from 40Hz to 10Hz. See "Run → On Hilti SLAM Challenge" section for details.
 
@@ -259,29 +246,7 @@ rosbag play newer_college.bag
 └────────────────────────────────────────────────────────┘
 ```
 
-## Computational Performance
 
-Tested on NVIDIA Jetson AGX Orin (12-core ARM CPU @ 2.2GHz, 64GB RAM):
-
-| Configuration | Avg. Time | Memory | Real-time (10Hz) |
-|---------------|-----------|---------|------------------|
-| 3 Cameras (Hilti) | 60.3ms | 2906 MB | ✅ Yes |
-| 3/4 Cameras (Custom) | 40.6ms | 2359 MB | ✅ Yes |
-
-*1.16-1.21× overhead compared to FAST-LIVO2 while maintaining real-time performance*
-
-## Troubleshooting
-
-### Common Issues
-
-**Q: Camera images not synchronized with LiDAR**
-A: Ensure hardware-level triggering is enabled. Check that all camera topics have matching timestamps.
-
-**Q: High photometric error in adaptive covariance**
-A: Adjust `photometric_threshold` in config. Check camera exposure settings and vignetting calibration.
-
-**Q: Cross-view migration not working**
-A: Verify camera extrinsic calibration accuracy. Ensure sufficient overlap in temporal domain.
 
 ## Acknowledgments
 
