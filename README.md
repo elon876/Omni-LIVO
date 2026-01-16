@@ -184,10 +184,24 @@ rosbag play YOUR_DOWNLOADED.bag
 
 ### On Hilti SLAM Challenge
 
+**⚠️ Important**: Hilti datasets have cameras running at 40Hz while Omni-LIVO requires 10Hz. You must first convert the bag files using the provided script:
+
 ```bash
+# Step 1: Convert camera frame rate from 40Hz to 10Hz
+python Omni-LIVO/scripts/cvt10hz.py /path/to/hilti/dataset/
+
+# This will generate *_10hz.bag files with synchronized 10Hz cameras
+
+# Step 2: Run Omni-LIVO
 roslaunch fast_livo mapping_Hilti2022.launch
-rosbag play hilti_dataset.bag
+rosbag play hilti_dataset_10hz.bag
 ```
+
+The `cvt10hz.py` script:
+- Downsamples 4 camera topics from 40Hz to 10Hz
+- Maintains temporal synchronization across all cameras
+- Preserves LiDAR and IMU data unchanged
+- Supports batch processing of multiple bag files
 
 ### On Newer College Dataset
 
@@ -198,10 +212,12 @@ rosbag play newer_college.bag
 
 ## Supported Datasets
 
-✅ **Hilti SLAM Challenge 2022** (15 sequences)
-✅ **Hilti SLAM Challenge 2023** (5 sequences)
+✅ **Hilti SLAM Challenge 2022** (15 sequences) - *Requires camera frame rate conversion to 10Hz*
+✅ **Hilti SLAM Challenge 2023** (5 sequences) - *Requires camera frame rate conversion to 10Hz*
 ✅ **Newer College Dataset** (7 sequences)
 ✅ **Custom Multi-Camera Dataset** with LIVOX MID360 + 3/4 cameras
+
+**Note**: Hilti datasets require preprocessing with `cvt10hz.py` script to convert cameras from 40Hz to 10Hz. See "Run → On Hilti SLAM Challenge" section for details.
 
 ## System Architecture
 
