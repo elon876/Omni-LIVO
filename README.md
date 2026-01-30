@@ -167,10 +167,12 @@ extrin_calib:
 
 ```yaml
 vio:
-  adaptive_cov_en: true        # Enable adaptive covariance
-  cross_view_migration_en: true # Enable cross-view temporal migration
-  max_visual_points: 150       # Maximum visual points per frame
-  photometric_threshold: 50.0  # Photometric error threshold
+  enable_dynamic_covariance: true      # Enable adaptive covariance
+  enable_cross_camera_tracking: true   # Enable cross-camera tracking (multi-camera system)
+  max_total_points: 150                # Maximum total points across all cameras
+  dynamic_cov_error_max: 100           # Dynamic covariance error threshold
+  min_cov_scale: 500.0                 # Minimum covariance scale
+  max_cov_scale: 2000.0                # Maximum covariance scale
 ```
 
 ## Run
