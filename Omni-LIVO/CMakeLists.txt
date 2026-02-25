@@ -75,10 +75,9 @@ else()
   message(STATUS "mimalloc not found, proceeding without it")
 endif()
 
-# OpenCV extras for BRIEF descriptor
-# Force using system OpenCV 4.2 instead of custom installed version
+
 set(OpenCV_DIR "/usr/lib/x86_64-linux-gnu/cmake/opencv4")
-find_package(OpenCV 4.2 REQUIRED
+find_package(OpenCV REQUIRED
         COMPONENTS
         core
         highgui
