@@ -1,0 +1,54 @@
+cam_0:
+  cam_model: "Pinhole"
+  scale: 0.5
+  cam_width: 1024
+  cam_height: 768
+  cam_fx: 491.61243079
+  cam_fy: 491.59793421
+  cam_cx: 509.19576525
+  cam_cy: 390.55245804
+  cam_d0: 0.03946464
+  cam_d1: -0.04188424
+  cam_d2: -0.00081631
+  cam_d3: -0.00048907
+cam_1:
+  cam_model: "Pinhole"
+  cam_width: 1024
+  cam_height: 768
+  scale: 0.5
+  cam_fx: 491.30059484
+  cam_fy: 491.52032513
+  cam_cx: 535.07657118
+  cam_cy: 404.55184217
+  cam_d0: 0.04597882
+  cam_d1: -0.04684992
+  cam_d2: -0.00083083
+  cam_d3: 0.00147055
+
+cam_2:
+  cam_model: "Pinhole"
+  cam_width: 1024
+  cam_height: 768
+  scale: 0.5
+  cam_fx: 504.71027203
+  cam_fy: 505.94199486
+  cam_cx: 558.67274185
+  cam_cy: 399.34953343
+  cam_d0: 0.03052974
+  cam_d1: -0.03102951
+  cam_d2: -0.00011754
+  cam_d3: 0.00253627
+
+cam_3:
+  cam_model: "Pinhole"
+  cam_width: 1024
+  cam_height: 768
+  scale: 0.5
+  cam_fx: 492.21619642
+  cam_fy: 491.75080876
+  cam_cx: 531.39937227
+  cam_cy: 394.35920146
+  cam_d0: 0.04558572
+  cam_d1: -0.04648011
+  cam_d2: -0.00090801
+  cam_d3: 0.00155415

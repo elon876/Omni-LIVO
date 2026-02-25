@@ -221,7 +221,7 @@ def main():
     for result in results:
         print(f"  ✓ {os.path.basename(result)}")
     print("\nYou can now use these bag files with Omni-LIVO:")
-    print("  roslaunch fast_livo mapping_Hilti2022.launch")
+    print("  roslaunch omni_livo mapping_Hilti2022.launch")
     print("  rosbag play <output_file>_10hz.bag")
     print("="*60 + "\n")
 

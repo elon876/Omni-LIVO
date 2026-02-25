@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(fast_livo)
+project(omni_livo)
 
 set(CMAKE_BUILD_TYPE "Release")
 message(STATUS "Build Type: ${CMAKE_BUILD_TYPE}")
@@ -76,7 +76,9 @@ else()
 endif()
 
 # OpenCV extras for BRIEF descriptor
-find_package(OpenCV REQUIRED
+# Force using system OpenCV 4.2 instead of custom installed version
+set(OpenCV_DIR "/usr/lib/x86_64-linux-gnu/cmake/opencv4")
+find_package(OpenCV 4.2 REQUIRED
         COMPONENTS
         core
         highgui
@@ -103,7 +105,7 @@ find_package(catkin REQUIRED COMPONENTS
 #find_package(teaserpp REQUIRED)
 find_package(Eigen3 REQUIRED)
 find_package(PCL REQUIRED)
-find_package(OpenCV REQUIRED)
+# OpenCV already found above with correct version
 
 # Find Sophus and manually link to libSophus.so
 FIND_PACKAGE(Sophus REQUIRED)

@@ -3,14 +3,14 @@
 
 	<arg name="rviz" default="true" />
 
-	<rosparam command="load" file="$(find fast_livo)/config/Hilti2022.yaml" />
+	<rosparam command="load" file="$(find omni_livo)/config/Hilti2022.yaml" />
 
-	<node pkg="fast_livo" type="fastlivo_mapping" name="laserMapping" output="screen">
-		<rosparam file="$(find fast_livo)/config/Hilti2022_cam.yaml" />
+	<node pkg="omni_livo" type="fastlivo_mapping" name="laserMapping" output="screen">
+		<rosparam file="$(find omni_livo)/config/Hilti2022_cam.yaml" />
 	</node>
-	
+
 	<group if="$(arg rviz)">
-		<node launch-prefix="nice" pkg="rviz" type="rviz" name="rviz" args="-d $(find fast_livo)/rviz_cfg/Newer.rviz" />
+		<node launch-prefix="nice" pkg="rviz" type="rviz" name="rviz" args="-d $(find omni_livo)/rviz_cfg/Newer.rviz" />
 	</group>
 
 launch-prefix="gdb -ex run --args"

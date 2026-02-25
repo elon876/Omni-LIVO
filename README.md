@@ -2,15 +2,15 @@
 
 **Omni-LIVO: Robust RGB-Colored Multi-Camera Visual-Inertial-LiDAR Odometry via Photometric Migration and ESIKF Fusion**
 
-[![Paper](https://img.shields.io/badge/Paper-arXiv-b31b1b)](https://arxiv.org/abs/2509.15673)
-[![Dataset](https://img.shields.io/badge/Dataset-Download-green)](https://pan.baidu.com/s/11SaVzvJGM1juWH-zAbGySg?pwd=328S)
+**Paper**: [IEEE Xplore](https://ieeexplore.ieee.org/document/11373930/)
+**Dataset**: [Baidu Netdisk](https://pan.baidu.com/s/11SaVzvJGM1juWH-zAbGySg?pwd=328S)
 
 This repository contains the official implementation of **Omni-LIVO**, a tightly-coupled multi-camera LiDAR-Inertial-Visual Odometry system that extends FAST-LIVO2 with multi-view photometric constraints for enhanced robustness and accuracy.
 
 ## News
-- **[2026-01]** 🎉 Our paper has been accepted by IEEE Robotics and Automation Letters (RA-L)!
-- **[2026-01]** 📦 Full source code is now publicly available
-- **[2026-01]** 🗂️ Custom dataset with 3/4-camera configuration released
+- **[2026-01]**  Our paper has been accepted by IEEE Robotics and Automation Letters (RA-L)!
+- **[2026-01]**  Full source code is now publicly available
+- **[2026-01]**  Custom dataset with 3/4-camera configuration released
 
 ## Abstract
 
@@ -28,24 +28,22 @@ Wide field-of-view (FoV) LiDAR sensors provide dense geometry across large envir
 If you use this code in your research, please cite our paper:
 
 ```bibtex
-@misc{cao2025omnilivo,
+@article{cao2025omnilivo,
+  author={Cao, Yinong and Zhang, Chenyang and He, Xin and others},
+  journal={IEEE Robotics and Automation Letters},
   title={Omni-LIVO: Robust RGB-Colored Multi-Camera Visual-Inertial-LiDAR Odometry via Photometric Migration and ESIKF Fusion},
-  author={Cao, Yinong and Zhang, Chenyang and He, Xin and Chen, Yuwei and Pu, Chengyu and Wang, Bingtao and Wu, Kaile and Zhu, Shouzheng and Han, Fei and Liu, Shijie and Li, Chunlai and Wang, Jianyu},
-  year={2025},
-  eprint={2509.15673},
-  archivePrefix={arXiv},
-  primaryClass={cs.RO},
-  note={Accepted by IEEE Robotics and Automation Letters (RA-L)}
+  year={2026},
+  doi={10.1109/LRA.2025.3530247}
 }
 ```
 
 ## Features
 
-- ✨ **Multi-Camera Support**: Seamless integration of multiple cameras with non-overlapping FoVs
-- 🔄 **Cross-View Migration**: Photometric patch tracking across different camera views
-- 📊 **Adaptive Covariance**: Dynamic weighting based on real-time photometric error
-- 🗺️ **Unified Voxel Map**: Integrated LiDAR geometry and multi-view visual observations
-- 🎨 **Dense RGB Colorization**: 3.5× more colored points than FAST-LIVO2 in complex environments
+-  **Multi-Camera Support**: Seamless integration of multiple cameras with non-overlapping FoVs
+-  **Cross-View Migration**: Photometric patch tracking across different camera views
+-  **Adaptive Covariance**: Dynamic weighting based on real-time photometric error
+-  **Unified Voxel Map**: Integrated LiDAR geometry and multi-view visual observations
+-  **Dense RGB Colorization**: 3.5× more colored points than FAST-LIVO2 in complex environments
 
 ## Omni-LIVO Dataset
 
@@ -180,7 +178,7 @@ vio:
 ### On Our Custom Dataset
 
 ```bash
-roslaunch fast_livo mapping_mid360.launch
+roslaunch omni_livo mapping_mid360.launch
 rosbag play YOUR_DOWNLOADED.bag
 ```
 
@@ -195,7 +193,7 @@ python Omni-LIVO/scripts/cvt10hz.py /path/to/hilti/dataset/
 # This will generate *_10hz.bag files with synchronized 10Hz cameras
 
 # Step 2: Run Omni-LIVO
-roslaunch fast_livo mapping_Hilti2022.launch
+roslaunch omni_livo mapping_Hilti2022.launch
 rosbag play hilti_dataset_10hz.bag
 ```
 
