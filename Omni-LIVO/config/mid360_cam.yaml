@@ -11,6 +11,7 @@ cam_0:
   cam_d1: -0.04188424
   cam_d2: -0.00081631
   cam_d3: -0.00048907
+  
 cam_1:
   cam_model: "Pinhole"
   cam_width: 1024
