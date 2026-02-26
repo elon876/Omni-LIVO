@@ -28,12 +28,15 @@ Wide field-of-view (FoV) LiDAR sensors provide dense geometry across large envir
 If you use this code in your research, please cite our paper:
 
 ```bibtex
-@article{cao2025omnilivo,
-  author={Cao, Yinong and Zhang, Chenyang and He, Xin and others},
+@article{cao2026omnilivo,
+  author={Cao, Yinong and Zhang, Chenyang and He, Xin and Chen, Yuwei and Pu, Chengyu and Wang, Bingtao and Wu, Kaile and Zhu, Shouzheng and Han, Fei and Liu, Shijie and Li, Chunlai and Wang, Jianyu},
   journal={IEEE Robotics and Automation Letters},
   title={Omni-LIVO: Robust RGB-Colored Multi-Camera Visual-Inertial-LiDAR Odometry via Photometric Migration and ESIKF Fusion},
   year={2026},
-  doi={10.1109/LRA.2025.3530247}
+  volume={11},
+  number={4},
+  pages={4369-4376},
+  doi={10.1109/LRA.2026.3662590}
 }
 ```
 
