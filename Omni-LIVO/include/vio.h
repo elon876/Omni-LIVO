@@ -306,6 +306,13 @@ public:
     std::deque<FramePtr> frame_history_;
     int max_frame_history = 3;
 
+    // Bound visual-map memory by capping feat_map voxel count. When enabled and
+    // feat_map.size() > max_visual_voxels_, drop oldest voxels (by creation_timestamp_)
+    // until the cap is satisfied.
+    bool map_sliding_en_ = false;
+    int max_visual_voxels_ = 10000;
+    size_t capVisualMap();
+
     bool enable_dynamic_covariance_ = false;
     int dynamic_cov_warmup_frames = 200;
     double warmup_cov_scale = 500.0;

@@ -101,6 +101,11 @@ lio:
   max_points_num: 100
   layer_init_num: [5, 5, 5, 5, 5]
 
+local_map:
+  map_sliding_en: true  #will cause map drift, but can reduce memory usage
+  half_map_size: 50
+  sliding_thresh: 4
+  max_visual_voxels: 10000  # cap VIO feat_map size; drop oldest voxels when exceeded
 
 uav:
   imu_rate_odom: false

@@ -67,6 +67,12 @@ typedef struct VoxelMapConfig {
     double dept_err_;
     double sigma_num_;
     bool is_pub_plane_map_;
+    // Local sliding map (FAST-LIO style) — bound memory by keeping only a cube
+    // of side 2*half_map_size_ around the robot; slide when |pos-origin|>sliding_thresh_
+    bool map_sliding_en_;
+    double half_map_size_;
+    double sliding_thresh_;
+    int max_visual_voxels_;
 } VoxelMapConfig;
 
 typedef struct PointToPlane {
@@ -316,6 +322,13 @@ public:
     ros::Publisher voxel_pointcloud_pub_;
 
     double oldest_kept_timestamp_ = -1.0;  // 保留的最旧时间戳（公开给VIO使用）
+
+    // Sliding local map: recenter to `pos` when it drifts > sliding_thresh_ from
+    // local_map_origin_, erasing voxels outside the cube of side 2*half_map_size_.
+    // Returns number of voxels erased.
+    size_t mapSliding(const V3D& pos);
+    V3D local_map_origin_ = V3D::Zero();
+    bool local_map_inited_ = false;
 
 private:
     // Store the map correction transformation

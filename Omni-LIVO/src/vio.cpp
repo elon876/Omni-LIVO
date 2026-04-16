@@ -40,6 +40,35 @@ VIOManager::~VIOManager() {
     feat_map.clear();
 }
 
+size_t VIOManager::capVisualMap() {
+    if (!map_sliding_en_) return 0;
+    if ((int) feat_map.size() <= max_visual_voxels_) return 0;
+
+    // Drop oldest voxels first (smallest creation_timestamp_).
+    std::vector<std::pair<double, VOXEL_LOCATION>> aged;
+    aged.reserve(feat_map.size());
+    for (const auto &kv: feat_map) {
+        aged.emplace_back(kv.second->creation_timestamp_, kv.first);
+    }
+    const size_t to_drop = feat_map.size() - (size_t) max_visual_voxels_;
+    std::nth_element(aged.begin(), aged.begin() + to_drop, aged.end(),
+                     [](const auto &a, const auto &b) { return a.first < b.first; });
+
+    size_t erased = 0;
+    for (size_t i = 0; i < to_drop; ++i) {
+        auto it = feat_map.find(aged[i].second);
+        if (it != feat_map.end()) {
+            delete it->second;  // ~VOXEL_POINTS frees VisualPoints + Features
+            feat_map.erase(it);
+            sub_feat_map.erase(aged[i].second);
+            ++erased;
+        }
+    }
+    std::cout << "[ VIO ] Cap visual map: erased " << erased
+              << " oldest voxels, remaining " << feat_map.size() << std::endl;
+    return erased;
+}
+
 void VIOManager::setImuToLidarExtrinsic(const V3D &transl, const M3D &rot) {
     Pli = -rot.transpose() * transl;
     Rli = rot.transpose();

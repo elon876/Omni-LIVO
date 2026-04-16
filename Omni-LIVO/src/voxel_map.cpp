@@ -63,6 +63,51 @@ void loadVoxelConfig(ros::NodeHandle &nh, VoxelMapConfig &voxel_config)
   nh.param<vector<int>>("lio/layer_init_num", voxel_config.layer_init_num_, vector<int>{5,5,5,5,5});
   nh.param<int>("lio/max_points_num", voxel_config.max_points_num_, 50);
   nh.param<int>("lio/max_iterations", voxel_config.max_iterations_, 5);
+
+  nh.param<bool>("local_map/map_sliding_en", voxel_config.map_sliding_en_, false);
+  nh.param<double>("local_map/half_map_size", voxel_config.half_map_size_, 100.0);
+  nh.param<double>("local_map/sliding_thresh", voxel_config.sliding_thresh_, 8.0);
+  nh.param<int>("local_map/max_visual_voxels", voxel_config.max_visual_voxels_, 10000);
+}
+
+size_t VoxelMapManager::mapSliding(const V3D& pos)
+{
+  if (!config_setting_.map_sliding_en_) return 0;
+
+  if (!local_map_inited_) {
+    local_map_origin_ = pos;
+    local_map_inited_ = true;
+    return 0;
+  }
+
+  if ((pos - local_map_origin_).norm() < config_setting_.sliding_thresh_) return 0;
+
+  const double voxel_size = config_setting_.max_voxel_size_;
+  const double half = config_setting_.half_map_size_;
+  const int64_t x_min = (int64_t)std::floor((pos.x() - half) / voxel_size);
+  const int64_t x_max = (int64_t)std::floor((pos.x() + half) / voxel_size);
+  const int64_t y_min = (int64_t)std::floor((pos.y() - half) / voxel_size);
+  const int64_t y_max = (int64_t)std::floor((pos.y() + half) / voxel_size);
+  const int64_t z_min = (int64_t)std::floor((pos.z() - half) / voxel_size);
+  const int64_t z_max = (int64_t)std::floor((pos.z() + half) / voxel_size);
+
+  size_t erased = 0;
+  for (auto it = voxel_map_.begin(); it != voxel_map_.end(); ) {
+    const VOXEL_LOCATION& loc = it->first;
+    if (loc.x < x_min || loc.x > x_max ||
+        loc.y < y_min || loc.y > y_max ||
+        loc.z < z_min || loc.z > z_max) {
+      delete it->second;
+      it = voxel_map_.erase(it);
+      ++erased;
+    } else {
+      ++it;
+    }
+  }
+  local_map_origin_ = pos;
+  std::cout << "[ LIO ] Sliding map: erased " << erased
+            << " voxels, remaining " << voxel_map_.size() << std::endl;
+  return erased;
 }
 
 void VoxelOctoTree::init_plane(const std::vector<pointWithVar> &points, VoxelPlane *plane)

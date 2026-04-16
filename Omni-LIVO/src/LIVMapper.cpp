@@ -257,6 +257,9 @@ void LIVMapper::initializeComponents() {
     vio_manager->dynamic_cov_error_max = vio_dynamic_cov_error_max;
     vio_manager->max_total_points = max_total_points;
 
+    vio_manager->map_sliding_en_ = voxelmap_manager->config_setting_.map_sliding_en_;
+    vio_manager->max_visual_voxels_ = voxelmap_manager->config_setting_.max_visual_voxels_;
+
     vio_manager->initializeVIO();
 
     p_imu->set_extrinsic(extT, extR);
@@ -517,6 +520,8 @@ void LIVMapper::handleLIO() {
               _state.cov.block<3, 3>(3, 3);
         voxelmap_manager->pv_list_[i].var = var;
     }
+    voxelmap_manager->mapSliding(_state.pos_end);
+    if (vio_manager) vio_manager->capVisualMap();
     voxelmap_manager->UpdateVoxelMap(voxelmap_manager->pv_list_,LidarMeasures.last_lio_update_time);
     std::cout << "[ LIO ] Update Voxel Map" << std::endl;
     _pv_list = voxelmap_manager->pv_list_;

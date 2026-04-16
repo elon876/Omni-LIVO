@@ -88,6 +88,12 @@ lio:
   max_points_num: 100
   layer_init_num: [5, 5, 5, 5, 5]
 
+local_map:
+  map_sliding_en: false
+  half_map_size: 100
+  sliding_thresh: 8
+  max_visual_voxels: 10000
+
 uav:
   imu_rate_odom: false
   gravity_align_en: false
