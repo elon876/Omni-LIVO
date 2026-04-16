@@ -45,7 +45,7 @@ time_offset:
 
 preprocess:
   point_filter_num: 1
-  filter_size_surf: 0.1 # 0.2
+  filter_size_surf: 0.2 # 0.1
   lidar_type: 5 # HesaiXT32
   scan_line: 32
   blind: 0.3 # 0.1 0.3
