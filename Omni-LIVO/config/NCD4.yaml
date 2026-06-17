@@ -1,0 +1,144 @@
+common:
+  lid_topic: "/os_cloud_node/points"
+  imu_topic: "/alphasense_driver_ros/imu"
+  img_en: 0
+  lidar_en: 1
+  ros_driver_bug_fix: false
+
+#  Rcl represents the rotation matrix of LiDAR frame w.r.t. Camera frame.
+#  Pcl represents the translation of LiDAR frame w.r.t. Camera frame.
+#  extrinsic_R represents the rotation matrix of LiDAR frame w.r.t. IMU frame.
+#  extrinsic_T represents the translation of LiDAR frame w.r.t. IMU frame.
+
+extrin_calib:
+  extrinsic_T: [-0.037, -0.008, -0.026]
+  extrinsic_R: [1, 0, 0,
+                0, -1, 0,
+                0, 0, -1]
+
+
+# 多相机外参统一放这里 ID必须与cam yaml对应 相机到雷达的变换
+  cameras:
+    - cam_id: 0
+      img_topic: "/alphasense_driver_ros/cam0"
+      Rcl: [ -0.00107, -0.99998, 0.00662,
+             -0.00781, -0.00661, -0.99995,
+             0.99997, -0.00112, -0.00780 ]
+      Pcl: [ -0.05476, -0.01627, -0.08342 ]
+
+
+#    - cam_id: 1
+#      img_topic: "/alphasense_driver_ros/cam1"
+#      Rcl: [ 0.00986, -0.99995, -0.00231,
+#             -0.00100, 0.00230, -1.00000,
+#             0.99995, 0.00986, -0.00098 ]
+#      Pcl: [ 0.05536, -0.01586, -0.08323 ]
+
+
+
+    - cam_id: 1
+      img_topic: "/alphasense_driver_ros/cam3"
+      Rcl: [ -0.99998, -0.00085, -0.00672,
+             0.00671, 0.01053, -0.99992,
+             0.00092, -0.99994, -0.01052 ]
+      Pcl: [ 0.03106, -0.01391, -0.06075 ]
+
+    - cam_id: 2
+      img_topic: "/alphasense_driver_ros/cam4"
+      Rcl: [ 0.99996, 0.00765, 0.00446,
+             0.00446, -0.00007, -0.99999,
+             -0.00765, 0.99997, -0.00010 ]
+      Pcl: [ -0.03028, -0.01478, -0.06714 ]
+
+
+
+loop_closure:
+  enabled: false
+  bev_resolution: 0.2
+  bev_size: 300
+  keyframe_interval: 50
+  similarity_threshold: 0.8
+  min_frames_between_loops: 200
+  pose_graph_iterations: 10
+  robust_kernel_delta: 1.0
+  structural_weight: 2.0
+  check_area_radius: 0.5
+  projection_axis: z
+  accumulate_frames: 5
+  frames_cooldown_after_loop: 50
+
+time_offset:
+  imu_time_offset: 0.0
+  img_time_offset: 0.1
+  exposure_time_init: 0.0
+
+preprocess:
+  point_filter_num: 1
+  filter_size_surf: 0.5
+  lidar_type: 3
+  scan_line: 128
+  blind: 0.2
+
+vio:
+  max_iterations: 5
+  outlier_threshold: 100
+  img_point_cov: 1000
+  patch_size: 8
+  patch_pyrimid_level: 4
+  normal_en: true
+  inverse_composition_en: false
+  exposure_estimate_en: true
+  inv_expo_cov: 0.1
+  enable_dynamic_covariance: true
+  min_points_per_camera: 30
+  ideal_points_per_camera: 80
+  max_cov_scale: 10000.0
+  min_cov_scale: 100.0
+  raycast_en: true
+
+imu:
+  imu_en: true
+  imu_int_frame: 30
+  acc_cov: 0.5
+  gyr_cov: 0.01
+  b_acc_cov: 0.0001
+  b_gyr_cov: 0.0001
+
+lio:
+  max_iterations: 5
+  dept_err: 0.02
+  beam_err: 0.05
+  min_eigen_value: 0.0001
+  voxel_size: 0.5
+  max_layer: 4
+  max_points_num: 100
+  layer_init_num: [5, 5, 5, 5, 5]
+
+
+
+
+local_map:
+  map_sliding_en: false
+  half_map_size: 100
+  sliding_thresh: 8
+
+uav:
+  imu_rate_odom: false
+  gravity_align_en: false
+
+publish:
+  dense_map_en: false
+  pub_effect_point_en: false
+  pub_plane_en: false
+  pub_scan_num: 1
+  blind_rgb_points: 0.0
+
+evo:
+  seq_name: "CBD_Building_01"
+  pose_output_en: true
+
+pcd_save:
+  pcd_save_en: false
+  colmap_output_en: false
+  filter_size_pcd: 0.2
+  interval: -1

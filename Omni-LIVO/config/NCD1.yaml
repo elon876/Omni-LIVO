@@ -1,0 +1,137 @@
+common:
+  lid_topic: "/os_cloud_node/points"
+  imu_topic: "/alphasense_driver_ros/imu"
+  img_en: 1
+  lidar_en: 1
+  ros_driver_bug_fix: false
+
+#  Rcl represents the rotation matrix of LiDAR frame w.r.t. Camera frame.
+
+#  Pcl represents the translation of LiDAR frame w.r.t. Camera frame.
+#  extrinsic_R represents the rotation matrix of LiDAR frame w.r.t. IMU frame.
+#  extrinsic_T represents the translation of LiDAR frame w.r.t. IMU frame.
+
+extrin_calib:
+  extrinsic_T: [-0.037, -0.008, -0.026]
+  extrinsic_R: [1, 0, 0,
+                0, -1, 0,
+                0, 0, -1]
+
+
+# 多相机外参统一放这里 ID必须与cam yaml对应 相机到雷达的变换
+  cameras:
+    - cam_id: 0
+      img_topic: "/alphasense_driver_ros/cam0"
+      Rcl: [ 0.00344, -0.99998, 0.00602,
+             -0.00101, -0.00602, -0.99998,
+             0.99999, 0.00343, -0.00103 ]
+      Pcl: [ -0.05543, -0.01685, -0.08605 ]
+
+
+#    - cam_id: 1
+#      img_topic: "/alphasense_driver_ros/cam1"
+#      Rcl: [0.01074, -0.99994, -0.00286,
+#            -0.00030, 0.00286, -1.00000,
+#            0.99994, 0.01074, -0.00027]
+#      Pcl: [0.05447, -0.01620, -0.08606]
+
+
+
+#    - cam_id: 1
+#      img_topic: "/alphasense_driver_ros/cam3"
+#      Rcl: [-0.99997, -0.00432, -0.00572,
+#            0.00568, 0.00827, -0.99995,
+#            0.00437, -0.99996, -0.00824]
+#      Pcl: [0.02787, -0.01693, -0.06670]
+#
+#    - cam_id: 2
+#      img_topic: "/alphasense_driver_ros/cam4"
+#      Rcl: [0.99996, 0.00733, 0.00493,
+#            0.00491, 0.00208, -0.99999,
+#            -0.00734, 0.99997, 0.00204]
+#      Pcl: [-0.03039, -0.01516, -0.06337]
+
+
+time_offset:
+  imu_time_offset: 0.0
+  img_time_offset: 0.0
+  exposure_time_init: 0.0
+
+preprocess:
+  point_filter_num: 1
+  filter_size_surf: 0.5
+  lidar_type: 3
+  scan_line: 128
+  blind: 0.2
+
+vio:
+  max_iterations: 5
+  outlier_threshold: 100
+  img_point_cov: 1000
+  patch_size: 4
+  patch_pyrimid_level: 4
+  normal_en: true
+  raycast_en: false
+  inverse_composition_en: false
+  exposure_estimate_en: true
+  inv_expo_cov: 0.1
+  enable_cross_camera_tracking: true   # 是否启用跨相机追踪（多相机系统）
+  enable_dynamic_covariance: false
+  dynamic_cov_warmup_frames: 100      # 前200帧使用固定协方差
+  warmup_cov_scale: 1000.0             # 预热期固定值（推荐300-800）
+  max_cov_scale: 2000.0  #cupa 1000-2000
+  min_cov_scale: 1000.0
+  max_total_points: 300               # 所有相机总共最多保留的点数
+
+  # 外参在线校准参数
+  enable_extrinsic_calib: true         # 是否启用外参在线校准
+  extrinsic_calib_rate: 0.05            # 外参更新步长 (0.01-0.1，越小越保守)
+  extrinsic_regularization: 50.0        # 正则化权重（防止外参漂移，建议10-100）
+  extrinsic_calib_translation_only: false # 仅校准平移（若旋转外参较准确）
+
+
+
+imu:
+  imu_en: true
+  imu_int_frame: 30
+  acc_cov: 0.5
+  gyr_cov: 0.01
+  b_acc_cov: 0.0001
+  b_gyr_cov: 0.0001
+
+lio:
+  max_iterations: 5
+  dept_err: 0.02
+  beam_err: 0.05
+  min_eigen_value: 0.0025 #0.0025
+  voxel_size: 0.5
+  max_layer: 4
+  max_points_num: 300
+  layer_init_num: [5, 5, 5, 5, 5]
+
+
+local_map:
+  map_sliding_en: false
+  half_map_size: 100
+  sliding_thresh: 8
+
+uav:
+  imu_rate_odom: false
+  gravity_align_en: false
+
+publish:
+  dense_map_en: true
+  pub_effect_point_en: false
+  pub_plane_en: false
+  pub_scan_num: 1
+  blind_rgb_points: 0.0
+
+evo:
+  seq_name: "frame_pose"
+  pose_output_en: true
+
+pcd_save:
+  pcd_save_en: false
+  colmap_output_en: false
+  filter_size_pcd: 0.2
+  interval: -1

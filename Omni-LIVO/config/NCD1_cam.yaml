@@ -1,0 +1,56 @@
+cam_0:
+  cam_model: "EquidistantCamera"
+  cam_width: 720
+  cam_height: 540
+  scale: 0.5
+  cam_fx: 352.779
+  cam_fy: 354.609
+  cam_cx: 359.035
+  cam_cy: 260.546
+  k1: -0.04217
+  k2: -0.00413
+  k3: 0.00179
+  k4: -0.00063
+
+#cam_1:
+#  cam_model: "EquidistantCamera"
+#  cam_width: 720
+#  cam_height: 540
+#  scale: 0.5
+#  cam_fx: 352.538
+#  cam_fy: 354.508
+#  cam_cx: 363.856
+#  cam_cy: 287.494
+#  k1: -0.04314
+#  k2: 0.00100
+#  k3: -0.00286
+#  k4: 0.00069
+
+cam_1:
+  cam_model: "EquidistantCamera"
+  cam_width: 720
+  cam_height: 540
+  scale: 0.5
+  cam_fx: 353.47720
+  cam_fy: 352.49310
+  cam_cx: 359.38201
+  cam_cy: 246.07623
+  k1: -0.03932
+  k2: -0.00474
+  k3: 0.00154
+  k4: -0.00040
+
+
+cam_2:
+  cam_model: "EquidistantCamera"
+  cam_width: 720
+  cam_height: 540
+  scale: 0.5
+  cam_fx: 351.38731
+  cam_fy: 350.76423
+  cam_cx: 342.75711
+  cam_cy: 287.28484
+  k1: -0.03691
+  k2: -0.00879
+  k3: 0.00597
+  k4: -0.00192
