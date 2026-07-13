@@ -3,7 +3,7 @@
 **Omni-LIVO: Robust RGB-Colored Multi-Camera Visual-Inertial-LiDAR Odometry via Photometric Migration and ESIKF Fusion**
 
 **Paper**: [IEEE Xplore](https://ieeexplore.ieee.org/document/11373930/)
-**Dataset**: [Baidu Netdisk](https://pan.baidu.com/s/11SaVzvJGM1juWH-zAbGySg?pwd=328S)
+**Dataset**: [Hugging Face](https://huggingface.co/datasets/Elon688/Omni-LIVO) | [Baidu Netdisk](https://pan.baidu.com/s/11SaVzvJGM1juWH-zAbGySg?pwd=328S)
 
 This repository contains the official implementation of **Omni-LIVO**, a tightly-coupled multi-camera LiDAR-Inertial-Visual Odometry system that extends FAST-LIVO2 with multi-view photometric constraints for enhanced robustness and accuracy.
 
@@ -50,7 +50,17 @@ If you use this code in your research, please cite our paper:
 
 ## Omni-LIVO Dataset
 
-**Download Link**: [Baidu Netdisk](https://pan.baidu.com/s/11SaVzvJGM1juWH-zAbGySg?pwd=328S)
+**Download Links**:
+- [Hugging Face](https://huggingface.co/datasets/Elon688/Omni-LIVO) (recommended, no registration required)
+- [Baidu Netdisk](https://pan.baidu.com/s/11SaVzvJGM1juWH-zAbGySg?pwd=328S) (access code: `328S`)
+
+```bash
+# Download the whole dataset
+hf download Elon688/Omni-LIVO --repo-type dataset --local-dir ./Omni-LIVO_dataset
+
+# Or a single sequence
+hf download Elon688/Omni-LIVO robot_basement1.bag --repo-type dataset --local-dir .
+```
 
 ### Sensor Configuration
 
