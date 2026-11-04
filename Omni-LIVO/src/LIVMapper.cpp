@@ -250,6 +250,7 @@ void LIVMapper::initializeComponents() {
 
     vio_manager->enable_cross_camera_tracking = enable_cross_camera_tracking;
     vio_manager->enable_dynamic_covariance_ = vio_dynamic_cov_enabled_;
+    ros::param::param<bool>("vio/per_camera_dynamic_cov", vio_manager->per_camera_dynamic_cov, true);
     vio_manager->dynamic_cov_warmup_frames = vio_dynamic_cov_warmup_frames;
     vio_manager->warmup_cov_scale = vio_warmup_cov_scale;
     vio_manager->min_cov_scale = vio_min_cov_scale;
@@ -1042,11 +1043,16 @@ bool LIVMapper::sync_packages(LidarMeasureGroup &meas)
                         mtx_buffer.unlock();
                     }
 
-                    *(meas.pcl_proc_cur) = *(meas.pcl_proc_next);
+                    meas.pcl_proc_cur->swap(*meas.pcl_proc_next);
                     PointCloudXYZI().swap(*meas.pcl_proc_next);
 
-                    int lid_frame_num = lid_raw_data_buffer.size();
-                    int max_size = meas.pcl_proc_cur->size() + 24000 * lid_frame_num;
+                    size_t incoming_pts = 0;
+                    const size_t n_lid = std::min(lid_header_time_buffer.size(), lid_raw_data_buffer.size());
+                    for (size_t k = 0; k < n_lid; ++k) {
+                        if (lid_header_time_buffer[k] > img_capture_time) break;
+                        incoming_pts += lid_raw_data_buffer[k]->points.size();
+                    }
+                    const size_t max_size = meas.pcl_proc_cur->size() + incoming_pts;
                     meas.pcl_proc_cur->reserve(max_size);
                     meas.pcl_proc_next->reserve(max_size);
 
@@ -1054,7 +1060,7 @@ bool LIVMapper::sync_packages(LidarMeasureGroup &meas)
                         if (lid_header_time_buffer.front() > img_capture_time)
                             break;
 
-                        auto pcl = lid_raw_data_buffer.front()->points;
+                        const auto &pcl = lid_raw_data_buffer.front()->points;
                         double frame_header_time = lid_header_time_buffer.front();
                         float max_offs_time_ms = (m.lio_time - frame_header_time) * 1000.0f;
 

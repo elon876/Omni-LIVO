@@ -111,7 +111,7 @@ void VIOManager::initializeVIO() {
     Jdp_dR_vec.resize(cams.size());
 
     
-    prev_cov_scale_per_cam_.resize(cams.size(), 10.0);
+    prev_cov_scale_per_cam_.resize(cams.size(), -1.0);
     prev_avg_error_per_cam_.resize(cams.size(), 5.0);
     prev_n_meas_per_cam_.resize(cams.size(), 0);
 
@@ -508,6 +508,8 @@ void VIOManager::retrieveFromVisualSparseMap(const std::vector<cv::Mat> imgs,
     
     if (feat_map.empty()) {
         ROS_WARN_THROTTLE(5.0, "[VIO] feat_map is empty, skipping visual point retrieval");
+        visual_submap->reset();
+        total_points = 0;
         return;
     }
     if (camera_photo_params.empty()) {
@@ -1300,7 +1302,8 @@ double VIOManager::calculateCoVarianceScale(double realtime_avg_error, int realt
 
     
     double alpha = 0.6;  
-    double smoothed_scale = alpha * cov_scale + (1.0 - alpha) * prev_cov_scale_;
+    double smoothed_scale = (prev_cov_scale_ > 0.0)
+            ? alpha * cov_scale + (1.0 - alpha) * prev_cov_scale_ : cov_scale;
     prev_cov_scale_ = smoothed_scale;
 
     
@@ -1339,7 +1342,8 @@ double VIOManager::calculateCoVarianceScalePerCam(int cam_idx, double realtime_a
 
     
     double alpha = 0.6;
-    double smoothed_scale = alpha * cov_scale + (1.0 - alpha) * prev_cov_scale_per_cam_[cam_idx];
+    double smoothed_scale = (prev_cov_scale_per_cam_[cam_idx] > 0.0)
+            ? alpha * cov_scale + (1.0 - alpha) * prev_cov_scale_per_cam_[cam_idx] : cov_scale;
     prev_cov_scale_per_cam_[cam_idx] = smoothed_scale;
 
     return smoothed_scale;
@@ -1351,11 +1355,16 @@ void VIOManager::computeJacobianAndUpdateEKF(const std::vector<cv::Mat> imgs)
         compute_jacobian_time = update_ekf_time = 0.0;
         return;  
     }
-    double original_img_point_cov = img_point_cov;
+    const int n_cams = (int)cams.size();
+    frame_cov_per_cam_.assign(n_cams, img_point_cov);
     if (enable_dynamic_covariance_) {
-        
-        double cov_scale = calculateCoVarianceScale(prev_avg_error_, prev_n_meas_);
-        img_point_cov = cov_scale;  
+        if (per_camera_dynamic_cov) {
+            for (int c = 0; c < n_cams; c++)
+                frame_cov_per_cam_[c] = calculateCoVarianceScalePerCam(c, prev_avg_error_per_cam_[c], prev_n_meas_per_cam_[c]);
+        } else {
+            const double sigma = calculateCoVarianceScale(prev_avg_error_, prev_n_meas_);
+            frame_cov_per_cam_.assign(n_cams, sigma);
+        }
     }
 
     compute_jacobian_time = update_ekf_time = 0.0;
@@ -1371,7 +1380,6 @@ void VIOManager::computeJacobianAndUpdateEKF(const std::vector<cv::Mat> imgs)
     }
     state->cov -= G * state->cov;
     updateFrameState(*state);
-    img_point_cov = original_img_point_cov;
 }
 
 
@@ -2470,6 +2478,9 @@ void VIOManager::updateState(const std::vector<cv::Mat> &imgs, int level) {
         }
         int row_offset_cam = 0;
         
+        H_sub.setZero();
+        z.setZero();
+
         int cross_cam_row_offset = base_measurement_size;
 
         
@@ -2480,6 +2491,8 @@ void VIOManager::updateState(const std::vector<cv::Mat> &imgs, int level) {
         };
         std::vector<CrossCameraPair> cross_camera_pairs;
         cross_camera_pairs.reserve(total_points);  
+        struct CrossCamRowRange { int begin, end, cam_a, cam_b; };
+        std::vector<CrossCamRowRange> cross_cam_row_ranges;
 
         
         for (int c = 0; c < num_cams; c++) {
@@ -2539,6 +2552,9 @@ void VIOManager::updateState(const std::vector<cv::Mat> &imgs, int level) {
             if ((int)P.size() <= patch_size_total * level)
                 continue;
 
+            const bool migrated_pt = pt->ref_patch && isRealCrossCameraPoint(pt, cam_idx);
+            const float s_cur = migrated_pt ? applyCameraPhotoCorrection(1.0f, cam_idx, V2D(pc)) : 1.0f;
+
             
             
             bool will_have_cross_camera_constraint = false;
@@ -2584,7 +2600,7 @@ void VIOManager::updateState(const std::vector<cv::Mat> &imgs, int level) {
                         );
                         MD(1, 2) Jimg;
                         Jimg << du, dv;
-                        Jimg *= (float)cur_inv_expo;
+                        Jimg *= (float)cur_inv_expo * s_cur;
                         Jimg *= inv_scale;
                         MD(1, 3) Jdphi = Jimg * Jdpi * p_hat;
                         MD(1, 3) Jdp = -Jimg * Jdpi;
@@ -2602,18 +2618,18 @@ void VIOManager::updateState(const std::vector<cv::Mat> &imgs, int level) {
                         if (exposure_estimate_en) {
                             res = cur_inv_expo * cur_val - inv_ref_expo * ref_val;
                         } else {
-                            res = ref_val - cur_val;
+                            res = cur_val - ref_val;
                         }
                         float corrected_res = res;
                         
 
-                        if (pt->ref_patch && isRealCrossCameraPoint(pt, cam_idx)) {
+                        if (migrated_pt) {
                             V2D px_pos(pc);
                             float source_intensity = applyCameraPhotoCorrection(
                                     inv_ref_expo * ref_val, pt->ref_patch->cam_id_, pt->ref_patch->px_);
                             float target_intensity = applyCameraPhotoCorrection(
                                     cur_inv_expo * cur_val, cam_idx, px_pos);
-                            corrected_res = source_intensity - target_intensity;
+                            corrected_res = target_intensity - source_intensity;
                         }
 
                         float w = 1.0f;
@@ -2656,7 +2672,7 @@ void VIOManager::updateState(const std::vector<cv::Mat> &imgs, int level) {
                     if (exposure_estimate_en) {
                         
                         
-                        float expo_jacobian = cur_val;
+                        float expo_jacobian = s_cur * cur_val;
                         int expo_col = 6 + cam_idx;  
                         H_sub(row_here, expo_col) = sqrt_w * expo_jacobian;
                     }
@@ -2689,8 +2705,11 @@ void VIOManager::updateState(const std::vector<cv::Mat> &imgs, int level) {
 
         successful_cross_camera_tracks = 0;
         for (const auto& pair : cross_camera_pairs) {
+            const int row_before = cross_cam_row_offset;
             addCrossCameraConsistencyConstraint(
                 pair.pt, pair.cam_a, pair.cam_b, H_sub, z, level, cross_cam_row_offset);
+            if (cross_cam_row_offset > row_before)
+                cross_cam_row_ranges.push_back({row_before, cross_cam_row_offset, pair.cam_a, pair.cam_b});
             successful_cross_camera_tracks++;
         }
 
@@ -2725,7 +2744,7 @@ void VIOManager::updateState(const std::vector<cv::Mat> &imgs, int level) {
             std::vector<double> cov_per_cam(num_cams, img_point_cov);
             if (enable_dynamic_covariance_) {
                 for (int c = 0; c < num_cams; c++) {
-                    cov_per_cam[c] = calculateCoVarianceScalePerCam(c, prev_avg_error_per_cam_[c], prev_n_meas_per_cam_[c]);
+                    cov_per_cam[c] = frame_cov_per_cam_[c];
                 }
 
                 // Output per-camera dynamic covariance info
@@ -2746,10 +2765,17 @@ void VIOManager::updateState(const std::vector<cv::Mat> &imgs, int level) {
             VectorXd z_weighted = z;
             int cam_meas_size = total_points * patch_size_total;
             for (int c = 0; c < num_cams; c++) {
-                double weight = 1.0 / std::sqrt(cov_per_cam[c]);
+                double weight = 1.0 / std::sqrt(cov_per_cam[c] * patch_size_total);
                 int row_start = row_start_per_cam[c];
                 int row_end = row_start + cam_meas_size;
                 for (int row = row_start; row < row_end && row < total_measurements; row++) {
+                    H_weighted.row(row) *= weight;
+                    z_weighted(row) *= weight;
+                }
+            }
+            for (const auto& rr : cross_cam_row_ranges) {
+                double weight = 1.0 / std::sqrt(0.5 * (cov_per_cam[rr.cam_a] + cov_per_cam[rr.cam_b]) * patch_size_total);
+                for (int row = rr.begin; row < rr.end && row < total_measurements; row++) {
                     H_weighted.row(row) *= weight;
                     z_weighted(row) *= weight;
                 }
@@ -2768,11 +2794,11 @@ void VIOManager::updateState(const std::vector<cv::Mat> &imgs, int level) {
             auto vec = (*state_propagat) - (*state);
 
             
-            Matrix<double, 6, 6> K_pose =
-                    (H_T_H_expo.block<6,6>(0,0) + state->cov.block<6,6>(0,0).inverse()).inverse();
-
-            
-            VectorXd solution_pose = -K_pose * HTz.head<6>() + vec.head<6>();
+            H_T_H.block<6,6>(0,0) = H_T_H_expo.block<6,6>(0,0);
+            MD(DIM_STATE, DIM_STATE) K_1 = (H_T_H + state->cov.inverse()).inverse();
+            G.block<DIM_STATE,6>(0,0) = K_1.block<DIM_STATE,6>(0,0) * H_T_H.block<6,6>(0,0);
+            MD(DIM_STATE, 1) solution_full = -K_1.block<DIM_STATE,6>(0,0) * HTz.head<6>() + vec
+                                             - G.block<DIM_STATE,6>(0,0) * vec.block<6,1>(0,0);
 
             
             for (int c = 0; c < num_cams; c++) {
@@ -2799,8 +2825,7 @@ void VIOManager::updateState(const std::vector<cv::Mat> &imgs, int level) {
             }
 
             
-            MD(DIM_STATE, 1) solution = MD(DIM_STATE, 1)::Zero();
-            solution.head<6>() = solution_pose;
+            MD(DIM_STATE, 1) solution = solution_full;
             (*state) += solution;
 
 
@@ -3042,7 +3067,9 @@ float VIOManager::applyCameraPhotoCorrection(float intensity, int cam_id, const 
                           camera_photo_params[cam_id].vignetting[1] * r2*r2 +
                           camera_photo_params[cam_id].vignetting[2] * r2*r2*r2;
     }
-    return (intensity * vignette_factor) * camera_photo_params[cam_id].exposure_factor;
+    float corrected = intensity * vignette_factor;
+    if (!exposure_estimate_en) corrected /= (float)camera_photo_params[cam_id].exposure_factor;
+    return corrected;
 }
 
 
@@ -3231,7 +3258,8 @@ void VIOManager::addCrossCameraConsistencyConstraint(
     mean_target /= patch_size_total;
 
     
-    if (mean_source > 20 && mean_source < 235 &&
+    if (!exposure_estimate_en &&
+        mean_source > 20 && mean_source < 235 &&
         mean_target > 20 && mean_target < 235) {
 
         double ratio = mean_target / mean_source;

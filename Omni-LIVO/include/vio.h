@@ -314,6 +314,7 @@ public:
     size_t capVisualMap();
 
     bool enable_dynamic_covariance_ = false;
+    bool per_camera_dynamic_cov = true;
     int dynamic_cov_warmup_frames = 200;
     double warmup_cov_scale = 500.0;
     int ideal_total_points = 150;
@@ -328,10 +329,11 @@ private:
     std::vector<VectorXd> z_all;
 
     std::vector<double> prev_cov_scale_per_cam_;
+    std::vector<double> frame_cov_per_cam_;
     std::vector<double> prev_avg_error_per_cam_;
     std::vector<int> prev_n_meas_per_cam_;
 
-    double prev_cov_scale_ = 10.0;
+    double prev_cov_scale_ = -1.0;
     double prev_avg_error_ = 5.0;
     int prev_n_meas_ = 0;
 

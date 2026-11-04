@@ -257,7 +257,6 @@ void ImuProcess::UndistortPcl(LidarMeasureGroup &lidar_meas, StatesGroup &state_
   // printf("[ IMU ] last propagation end time: %lf \n", lidar_meas.last_lio_update_time);
   if (lidar_meas.lio_vio_flg == LIO)
   {
-    pcl_wait_proc.resize(lidar_meas.pcl_proc_cur->points.size());
     pcl_wait_proc = *(lidar_meas.pcl_proc_cur);
     lidar_meas.lidar_scan_index_now = 0;
     IMUpose.push_back(set_pose6d(0.0, acc_s_last, angvel_last, state_inout.vel_end, state_inout.pos_end, state_inout.rot_end));
@@ -518,8 +517,8 @@ void ImuProcess::UndistortPcl(LidarMeasureGroup &lidar_meas, StatesGroup &state_
         if (it_pcl == pcl_wait_proc.points.begin()) break;
       }
     }
-    pcl_out = pcl_wait_proc;
-    pcl_wait_proc.clear();
+    pcl_out.swap(pcl_wait_proc);
+    PointCloudXYZI().swap(pcl_wait_proc);
     IMUpose.clear();
   }
   // printf("[ IMU ] time forward: %lf, backward: %lf.\n", t1 - t0, omp_get_wtime() - t1);
